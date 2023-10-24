@@ -76,10 +76,21 @@ def registro(request):
     nuevo_cliente = None
     nuevo_usuario = None
     if request.method == 'GET':
+        #creacion del json
+        response_data = {
+        "mensaje": "Registro exitoso.",
+        "redireccion": "/api/login"
+        }
 
-        contador = 0
-        for key, value in request.GET.items():
-            contador+=1
+        # Convertir el diccionario a formato JSON
+        json_response = json.dumps(response_data)
+
+        # Crear una respuesta JSON
+        response = HttpResponse(json_response, content_type='application/json')
+
+        # Redirigir al usuario a la URL especificada en el diccionario JSON
+        response['Location'] = response_data["redireccion"]
+
 
         #registro usuario        
         print(request.GET.get('tipoid'))
@@ -113,25 +124,16 @@ def registro(request):
                                         direccion =request.GET.get('direccion'))
             nuevo_cliente.save()
             print("se creo cliente")
-            return HttpResponse('Cliente creado')
+            nuevo_usuario.save()
+            return response
         elif(request.GET.get('rol')=='artista'):    #registro artista
             nuevo_artista = Artista (tipoidusuario = request.GET.get('tipoid'), numidusuario = Usuario.objects.get(numid =request.GET.get('numid')), utilidad = 0, numventas =0)
             nuevo_artista.save()
+            nuevo_usuario.save()
             print("se creo artista")
-        response_data = {
-        "mensaje": "Registro exitoso.",
-        "redireccion": "/api/login"
-        }
-
-        # Convertir el diccionario a formato JSON
-        json_response = json.dumps(response_data)
-
-        # Crear una respuesta JSON
-        response = HttpResponse(json_response, content_type='application/json')
-
-        # Redirigir al usuario a la URL especificada en el diccionario JSON
-        response['Location'] = response_data["redireccion"]
+            return response
         
-        return response
+        
+        return HttpResponse('fallo en el registro')
     else:
         return HttpResponse('fallo en el registro')
