@@ -75,7 +75,7 @@ def registro(request):
     nuevo_artista = None
     nuevo_cliente = None
     nuevo_usuario = None
-    if request.method == 'GET':
+    if request.method == 'POST':
 
         contador = 0
         for key, value in request.GET.items():
