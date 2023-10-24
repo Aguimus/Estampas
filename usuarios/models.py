@@ -2,8 +2,8 @@ from django.db import models
 
 
 class Admin(models.Model):
-    tipoidusuario = models.OneToOneField('Usuario', models.DO_NOTHING, db_column='tipoidusuario', primary_key=True)  # The composite primary key (tipoidusuario, numidusuario) found, that is not supported. The first column is selected.
-    numidusuario = models.DecimalField(max_digits=10, decimal_places=0)
+    tipoidusuario = models.CharField(max_length=2)  # The composite primary key (tipoidusuario, numidusuario) found, that is not supported. The first column is selected.
+    numidusuario = models.OneToOneField('Usuario', models.DO_NOTHING,db_column='numidusuario', primary_key=True)
 
     class Meta:
         managed = False
@@ -12,8 +12,8 @@ class Admin(models.Model):
 
 
 class Artista(models.Model):
-    tipoidusuario = models.OneToOneField('Usuario', models.DO_NOTHING, db_column='tipoidusuario', primary_key=True)  # The composite primary key (tipoidusuario, numidusuario) found, that is not supported. The first column is selected.
-    numidusuario = models.DecimalField(max_digits=10, decimal_places=0)
+    tipoidusuario = models.CharField(max_length=2)  # The composite primary key (tipoidusuario, numidusuario) found, that is not supported. The first column is selected.
+    numidusuario = models.OneToOneField('Usuario', models.DO_NOTHING,db_column='numidusuario', primary_key=True)
     utilidad = models.DecimalField(max_digits=6, decimal_places=2)
     numventas = models.DecimalField(max_digits=4, decimal_places=0)
 
@@ -56,9 +56,10 @@ class Catalogoestampa(models.Model):
 
 
 class Cliente(models.Model):
-    tipoidusuario = models.OneToOneField('Usuario', models.DO_NOTHING, db_column='tipoidusuario', primary_key=True)  # The composite primary key (tipoidusuario, numidusuario) found, that is not supported. The first column is selected.
-    numidusuario = models.DecimalField(max_digits=10, decimal_places=0)
+    tipoidusuario = models.CharField(max_length=2)  # The composite primary key (tipoidusuario, numidusuario) found, that is not supported. The first column is selected.
+    numidusuario = models.OneToOneField('Usuario', models.DO_NOTHING,db_column='numidusuario', primary_key=True)
     direccion = models.CharField(max_length=30)
+    
 
     class Meta:
         managed = False
@@ -97,8 +98,8 @@ class Factura(models.Model):
 
 
 class Usuario(models.Model):
-    tipoid = models.CharField(primary_key=True, max_length=2)  # The composite primary key (tipoid, numid) found, that is not supported. The first column is selected.
-    numid = models.DecimalField(max_digits=10, decimal_places=0)
+    tipoid = models.CharField( max_length=2)  # The composite primary key (tipoid, numid) found, that is not supported. The first column is selected.
+    numid = models.DecimalField(max_digits=10, decimal_places=0, primary_key=True)
     nombre = models.CharField(max_length=30)
     apellido = models.CharField(max_length=30)
     genero = models.CharField(max_length=1)
