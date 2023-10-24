@@ -112,7 +112,6 @@ def registro(request):
 
 
         print(nuevo_usuario)
-        nuevo_usuario.save()
         print("se creo usuario")
         #print(Usuario.objects.get())
         
