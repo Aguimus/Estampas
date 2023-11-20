@@ -32,7 +32,7 @@ def login(request):
         if request.GET.get('rol') == 'cliente':
             try:
                 cliente = Cliente.objects.get(tipoidusuario=usuarioObtenido.tipoid, numidusuario=usuarioObtenido.numid)
-            except Usuario.DoesNotExist:
+            except Cliente.DoesNotExist:
                 cliente = None
             if  usuarioObtenido is not None and cliente is not None:
                 if(usuarioObtenido.contrasena == request.GET.get('contrasena')):
@@ -78,8 +78,8 @@ def registro(request):
     if request.method == 'POST':
         #creacion del json
         response_data = {
-        "mensaje": "Registro exitoso.",
-        "redireccion": "/api/login"
+            "mensaje": "Registro exitoso.",
+            "redireccion": "/api/login"
         }
 
         # Convertir el diccionario a formato JSON
@@ -90,7 +90,6 @@ def registro(request):
 
         # Redirigir al usuario a la URL especificada en el diccionario JSON
         response['Location'] = response_data["redireccion"]
-
 
         #registro usuario        
         print(request.GET.get('tipoid'))
@@ -105,22 +104,19 @@ def registro(request):
             return HttpResponse('El usuario no es valido')
         else:
             nuevo_usuario = Usuario(tipoid=request.GET.get('tipoid'), numid=request.GET.get('numid'),
-                                        nombre=request.GET.get('nombre'), apellido=request.GET.get('apellido')
-                                        , genero=request.GET.get('genero'), correo=request.GET.get('correo'),
+                                        nombre=request.GET.get('nombre'), apellido=request.GET.get('apellido'),
+                                        genero=request.GET.get('genero'), correo=request.GET.get('correo'),
                                         usuario=request.GET.get('usuario'), contrasena=request.GET.get('contrasena'))
-                
-
 
         print(nuevo_usuario)
         print("se creo usuario")
-        #print(Usuario.objects.get())
-        
 
         #registro cliente
         if request.GET.get('rol')=='cliente' and request.GET.get('direccion', None) is not None:
             nuevo_cliente = Cliente (numidusuario = Usuario.objects.get(numid =request.GET.get('numid')),
                                       tipoidusuario = request.GET.get('tipoid'),
                                         direccion =request.GET.get('direccion'))
+            print(nuevo_cliente)
             nuevo_cliente.save()
             print("se creo cliente")
             nuevo_usuario.save()
