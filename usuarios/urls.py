@@ -7,5 +7,6 @@ urlpatterns = [
     path('estampas/',views.catestampa),
     path('usuarioID/', views.usuarioID),
     path('factura/', views.generarFactura),
-    path('catalogoCamisetas/', views.actualizarCantidad)
+    path('catalogoCamisetas/', views.actualizarCantidad),
+    path('artista/', views.actualizarVentas)
 ]
