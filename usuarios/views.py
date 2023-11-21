@@ -4,7 +4,7 @@ from .models import Usuario
 from .models import Cliente
 from .models import Artista
 from .models import Admin
-from .models import Camiseta,Catalogocamiseta,Catalogoestampa,Estampa
+from .models import Camiseta,Catalogocamiseta,Catalogoestampa,Estampa, Factura
 import json
 from django.http import HttpResponse
 # Create your views here.
@@ -182,3 +182,36 @@ def usuarioID(request):
     except Usuario.DoesNotExist:
         usuarioObtenido = None
     return HttpResponse('No existe el usuario')
+
+def generarFactura(request):
+    factura = None
+    if request.method == 'POST':
+        
+        factura = Factura(idfactura = request.GET.get('idfactura'),tipoidcliente = request.GET.get('tipoidcliente'),
+                        numidcliente = request.GET.get('numidcliente'),idcamiseta =  request.GET.get('idcamiseta'),
+                        idestampa = request.GET.get('idestampa'), preciototal = request.GET.get('preciototal'))
+        factura.save()
+        print("Se creo la factura")
+        return HttpResponse('Registro de factura exitoso')
+    return HttpResponse('Fallo en el registro')
+
+def actualizarCantidad(request):
+    try:
+        actualizacion = Catalogocamiseta.objects.get(idcatcamiseta=request.GET.get('idcatcamiseta'))
+        actualizacion.cantdisponible = actualizacion.cantdisponible - request.GET.get('cantidadComprada')
+        actualizacion.save()
+        return HttpResponse('Actaulización de cantidad completa')
+    except Catalogocamiseta.DoesNotExist:
+        actualizacion = None
+        return HttpResponse('No se encontro la camiseta')
+    
+def actualizarVentas(request):
+    try:
+        artista = Artista.objects.get(tipoidusuario = request.GET.get('idcatcamiseta'), numidusuario = request.GET.get('numidusuario'))
+        artista.utilidad = artista.utilidad + request.GET.get('nuevaUtilidad')
+        artista.numventas = artista.numventas + request.GET.get('cantidadComprada')
+        artista.save()
+        return HttpResponse('Actaulización de utilidad completa')
+    except Artista.DoesNotExist:
+        artista = None
+        return HttpResponse('No se encontro el artista')
