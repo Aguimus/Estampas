@@ -4,6 +4,7 @@ from .models import Usuario
 from .models import Cliente
 from .models import Artista
 from .models import Admin
+from .models import Camiseta,Catalogocamiseta,Catalogoestampa,Estampa
 import json
 from django.http import HttpResponse
 # Create your views here.
@@ -132,3 +133,52 @@ def registro(request):
         return HttpResponse('fallo en el registro')
     else:
         return HttpResponse('fallo en el registro')
+    
+def catcamiseta(request):
+    catcamiseta = Catalogocamiseta.objects.filter(cantdisponible__gt=0)
+    data = list()  # wrap in list(), because QuerySet is not JSON serializable
+    for o in catcamiseta:
+        ##print(o.idcamiseta.idcamiseta)
+        camiseta = Camiseta.objects.filter(idcamiseta = o.idcamiseta.idcamiseta).values()
+        for i in camiseta:
+            response_data = {
+            'cantcamiseta': o.cantdisponible,
+            'informacion': i
+            }
+            data.append(response_data)
+        
+    print("rs ",response_data)
+    jsonList = json.dumps(data, default=str)
+    #print(jsonList)
+
+    
+    return HttpResponse(jsonList, content_type='application/json')
+
+def catestampa(request):
+    catestampa = Catalogoestampa.objects.filter(cantdisponible__gt=0)
+    data = list()
+    for o in catestampa:
+        estampa = Estampa.objects.filter(idestampa = o.idestampa.idestampa, disponible = True).values()
+        for i in estampa:
+            usuario = Usuario.objects.get(tipoid = i.get('tipoidartista_id'), numid = i.get("numidartista"))
+            print("user" + usuario.usuario)
+            response_data = {
+            'cantestampa': o.cantdisponible,
+            'informacionEstampa': i,
+            'nombre_artista' : usuario.nombre,
+            'apellido_artista':usuario.apellido,
+            'usuario_artista': usuario.usuario
+            }
+            data.append(response_data)
+            
+    print("rs ",response_data)
+    jsonList = json.dumps(data, default=str)    
+    return HttpResponse(jsonList, content_type='application/json')
+
+def usuarioID(request):
+    try:
+        usuarioObtenido = Usuario.objects.get(usuario=request.GET.get('usuario'))
+        print("usuarioid ", usuarioObtenido.numid, " usuariotipoid ", usuarioObtenido.tipoid)
+    except Usuario.DoesNotExist:
+        usuarioObtenido = None
+    return HttpResponse('No existe el usuario')
