@@ -7,6 +7,7 @@ from .models import Admin
 from .models import Camiseta,Catalogocamiseta,Catalogoestampa,Estampa, Factura
 import json
 from django.http import HttpResponse
+
 # Create your views here.
 @csrf_exempt
 def login(request):
@@ -142,6 +143,7 @@ def catcamiseta(request):
         camiseta = Camiseta.objects.filter(idcamiseta = o.idcamiseta.idcamiseta).values()
         for i in camiseta:
             response_data = {
+            'idcatcamiseta': o.idcatcamiseta,
             'cantcamiseta': o.cantdisponible,
             'informacion': i
             }
@@ -179,6 +181,13 @@ def usuarioID(request):
     try:
         usuarioObtenido = Usuario.objects.get(usuario=request.GET.get('usuario'))
         print("usuarioid ", usuarioObtenido.numid, " usuariotipoid ", usuarioObtenido.tipoid)
+        data = {
+            'tipoid': usuarioObtenido.numid,
+            'numid': usuarioObtenido.tipoid
+        }
+        
+        jsonList = json.dumps(data, default=str)    
+        return HttpResponse(jsonList, content_type='application/json')
     except Usuario.DoesNotExist:
         usuarioObtenido = None
     return HttpResponse('No existe el usuario')
@@ -207,7 +216,7 @@ def actualizarCantidad(request):
     
 def actualizarVentas(request):
     try:
-        artista = Artista.objects.get(tipoidusuario = request.GET.get('idcatcamiseta'), numidusuario = request.GET.get('numidusuario'))
+        artista = Artista.objects.get(tipoidusuario = request.GET.get('tipoidusuario'), numidusuario = request.GET.get('numidusuario'))
         artista.utilidad = artista.utilidad + request.GET.get('nuevaUtilidad')
         artista.numventas = artista.numventas + request.GET.get('cantidadComprada')
         artista.save()

@@ -29,7 +29,7 @@ class Camiseta(models.Model):
     color = models.CharField(max_length=15)
     material = models.CharField(max_length=20)
     precio = models.DecimalField(max_digits=6, decimal_places=0)
-    imgurl = models.CharField(max_length=50)
+    imgurl = models.CharField(max_length=200)
 
     class Meta:
         managed = False
@@ -72,7 +72,7 @@ class Estampa(models.Model):
     idestampa = models.CharField(primary_key=True, max_length=5)
     nombre = models.CharField(max_length=25)
     descripcion = models.CharField(max_length=200)
-    imgurl = models.CharField(max_length=50)
+    imgurl = models.CharField(max_length=200)
     disponible = models.BooleanField()
     tema = models.CharField(max_length=20)
     precio = models.DecimalField(max_digits=6, decimal_places=0)
