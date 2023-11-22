@@ -29,7 +29,7 @@ class Camiseta(models.Model):
     color = models.CharField(max_length=15)
     material = models.CharField(max_length=20)
     precio = models.DecimalField(max_digits=6, decimal_places=0)
-    #imgurl = models.CharField(max_length=200)
+    imgurl = models.CharField(max_length=200)
 
     class Meta:
         managed = False

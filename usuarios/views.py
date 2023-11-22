@@ -115,6 +115,7 @@ def registro(request):
 
         #registro cliente
         if request.GET.get('rol')=='cliente' and request.GET.get('direccion', None) is not None:
+            nuevo_usuario.save()
             nuevo_cliente = Cliente (numidusuario = Usuario.objects.get(numid =request.GET.get('numid')),
                                       tipoidusuario = request.GET.get('tipoid'),
                                         direccion =request.GET.get('direccion'))
@@ -123,10 +124,11 @@ def registro(request):
             print("se creo cliente")
             nuevo_usuario.save()
             return response
-        elif(request.GET.get('rol')=='artista'):    #registro artista
+        elif(request.GET.get('rol')=='artista'):
+            nuevo_usuario.save()#registro artista
             nuevo_artista = Artista (tipoidusuario = request.GET.get('tipoid'), numidusuario = Usuario.objects.get(numid =request.GET.get('numid')), utilidad = 0, numventas =0)
             nuevo_artista.save()
-            nuevo_usuario.save()
+            
             print("se creo artista")
             return response
         
@@ -182,8 +184,8 @@ def usuarioID(request):
         usuarioObtenido = Usuario.objects.get(usuario=request.GET.get('usuario'))
         print("usuarioid ", usuarioObtenido.numid, " usuariotipoid ", usuarioObtenido.tipoid)
         data = {
-            'tipoid': usuarioObtenido.numid,
-            'numid': usuarioObtenido.tipoid
+            'tipoid': usuarioObtenido.tipoid,
+            'numid': usuarioObtenido.numid
         }
         
         jsonList = json.dumps(data, default=str)    
@@ -194,7 +196,7 @@ def usuarioID(request):
 @csrf_exempt
 def generarFactura(request):
     factura = None
-    print(len(request.GET.get('tipoidcliente')))
+    
     try:
         factura = Factura(idfactura = request.GET.get('idfactura'),
                         tipoidcliente = request.GET.get('tipoidcliente'),
@@ -217,6 +219,7 @@ def actualizarCantidad(request):
     except Catalogocamiseta.DoesNotExist:
         actualizacion = None
         return HttpResponse('No se encontro la camiseta')
+    
 @csrf_exempt   
 def actualizarVentas(request):
     try:
