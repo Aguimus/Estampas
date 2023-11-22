@@ -29,7 +29,7 @@ class Camiseta(models.Model):
     color = models.CharField(max_length=15)
     material = models.CharField(max_length=20)
     precio = models.DecimalField(max_digits=6, decimal_places=0)
-    imgurl = models.CharField(max_length=200)
+    #imgurl = models.CharField(max_length=200)
 
     class Meta:
         managed = False
@@ -87,7 +87,7 @@ class Estampa(models.Model):
 
 class Factura(models.Model):
     idfactura = models.CharField(primary_key=True, max_length=5)
-    tipoidcliente = models.ForeignKey(Cliente, models.DO_NOTHING, db_column='tipoidcliente')
+    tipoidcliente = models.CharField(max_length=3)
     numidcliente = models.DecimalField(max_digits=10, decimal_places=0)
     idcamiseta = models.ForeignKey(Camiseta, models.DO_NOTHING, db_column='idcamiseta')
     idestampa = models.ForeignKey(Estampa, models.DO_NOTHING, db_column='idestampa')

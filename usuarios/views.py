@@ -185,15 +185,19 @@ def usuarioID(request):
 @csrf_exempt
 def generarFactura(request):
     factura = None
-    if request.method == 'POST':
-        
-        factura = Factura(idfactura = request.GET.get('idfactura'),tipoidcliente = request.GET.get('tipoidcliente'),
-                        numidcliente = request.GET.get('numidcliente'),idcamiseta =  request.GET.get('idcamiseta'),
-                        idestampa = request.GET.get('idestampa'), preciototal = request.GET.get('preciototal'))
+    print(len(request.GET.get('tipoidcliente')))
+    try:
+        factura = Factura(idfactura = request.GET.get('idfactura'),
+                        tipoidcliente = request.GET.get('tipoidcliente'),
+                        numidcliente = request.GET.get('numidcliente'),idcamiseta =  Camiseta.objects.get(idcamiseta = request.GET.get('idcamiseta')),
+                        idestampa = Estampa.objects.get(idestampa = request.GET.get('idestampa')), preciototal = request.GET.get('preciototal'))
         factura.save()
         print("Se creo la factura")
         return HttpResponse('Registro de factura exitoso')
-    return HttpResponse('Fallo en el registro')
+    except Cliente.DoesNotExist:
+        print ('no existe')
+        return HttpResponse('el usuario no existe')
+    
 @csrf_exempt
 def actualizarCantidad(request):
     try:
