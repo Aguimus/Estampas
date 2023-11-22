@@ -191,7 +191,7 @@ def usuarioID(request):
     except Usuario.DoesNotExist:
         usuarioObtenido = None
     return HttpResponse('No existe el usuario')
-
+@csrf_exempt
 def generarFactura(request):
     factura = None
     if request.method == 'POST':
@@ -203,24 +203,24 @@ def generarFactura(request):
         print("Se creo la factura")
         return HttpResponse('Registro de factura exitoso')
     return HttpResponse('Fallo en el registro')
-
+@csrf_exempt
 def actualizarCantidad(request):
     try:
         actualizacion = Catalogocamiseta.objects.get(idcatcamiseta=request.GET.get('idcatcamiseta'))
-        actualizacion.cantdisponible = actualizacion.cantdisponible - request.GET.get('cantidadComprada')
+        actualizacion.cantdisponible = actualizacion.cantdisponible - int(request.GET.get('cantidadComprada'))
         actualizacion.save()
         return HttpResponse('Actaulización de cantidad completa')
     except Catalogocamiseta.DoesNotExist:
         actualizacion = None
         return HttpResponse('No se encontro la camiseta')
-    
+@csrf_exempt   
 def actualizarVentas(request):
     try:
         artista = Artista.objects.get(tipoidusuario = request.GET.get('tipoidusuario'), numidusuario = request.GET.get('numidusuario'))
-        artista.utilidad = artista.utilidad + request.GET.get('nuevaUtilidad')
-        artista.numventas = artista.numventas + request.GET.get('cantidadComprada')
+        artista.utilidad = artista.utilidad + int(request.GET.get('nuevaUtilidad'))
+        artista.numventas = artista.numventas + int(request.GET.get('cantidadComprada'))
         artista.save()
-        return HttpResponse('Actaulización de utilidad completa')
+        return HttpResponse('Actualización de utilidad completa')
     except Artista.DoesNotExist:
         artista = None
         return HttpResponse('No se encontro el artista')
