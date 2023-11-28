@@ -5,6 +5,8 @@ from .models import Cliente
 from .models import Artista
 from .models import Admin
 from .models import Camiseta,Catalogocamiseta,Catalogoestampa,Estampa, Factura
+from django.db.models import Q
+import re
 import json
 from django.http import HttpResponse
 
@@ -231,3 +233,84 @@ def actualizarVentas(request):
     except Artista.DoesNotExist:
         artista = None
         return HttpResponse('No se encontro el artista')
+
+@csrf_exempt  
+def nuevaEstampa (request):
+    try:
+        # Obtén todos los registros y ordénalos en Python
+        registros_ordenados = sorted(Estampa.objects.all(), key=lambda x: int(x.idestampa[2:]))
+
+        # Obtén el último registro
+        ultimo_registro = registros_ordenados[-1] if registros_ordenados else None
+        id_ultimo_registro = ultimo_registro.idestampa if ultimo_registro else None
+        
+        # Expresión regular para extraer la parte numérica de la cadena "ES"
+        patron = re.compile(r'ES(\d+)')
+
+        # Extraer la parte numérica del id del último registro
+        coincidencia = patron.match(id_ultimo_registro)
+        parte_numerica = int(coincidencia.group(1)) if coincidencia else None
+        parte_numerica = parte_numerica + 1
+        nuevaEstampa = None
+        nuevaId = 'ES'+str(parte_numerica)
+        nuevaEstampa = Estampa(idestampa = nuevaId, nombre = request.GET.get('nombre'),
+                            descripcion = request.GET.get('descripcion'), imgurl = request.GET.get('imgurl'),
+                            disponible = True,tema = request.GET.get('tema'), precio = request.GET.get('precio'),
+                            rating = 1, tipoidartista = request.GET.get('tipoidartista'), 
+                            numidartista = request.GET.get('numidartista'))
+        nuevaEstampa.save()
+
+        # Obtén todos los registros y ordénalos en Python
+        registros_ordenados = sorted(Catalogoestampa.objects.all(), key=lambda x: int(x.idcatestampa[2:]))
+
+        # Obtén el último registro
+        ultimo_registro = registros_ordenados[-1] if registros_ordenados else None
+        id_ultimo_registro = ultimo_registro.idcatestampa if ultimo_registro else None
+        # Expresión regular para extraer la parte numérica de la cadena "ES"
+        patron = re.compile(r'CE(\d+)')
+
+        # Extraer la parte numérica del id del último registro
+        coincidencia = patron.match(id_ultimo_registro)
+        parte_numericaC = int(coincidencia.group(1)) if coincidencia else None
+        parte_numericaC = parte_numericaC + 1
+
+        nuevaidC = 'CE'+str(parte_numericaC)
+        nuevoCat = Catalogoestampa(idcatestampa = nuevaidC, idestampa = Estampa.objects.get(idestampa = nuevaId), cantdisponible = 20)
+
+        nuevoCat.save()
+        return HttpResponse('Registro exitoso')
+    except Estampa.DoesNotExist:
+        return HttpResponse('ocurrio un error')
+
+@csrf_exempt   
+def actualizarEstampa(request):
+    try:
+        estampa = Estampa.objects.get(idestampa = request.GET.get('idestampa'))
+        estampa.nombre = request.GET.get('nombre')
+        estampa.descripcion = request.GET.get('descripcion')
+        estampa.imgurl = request.GET.get('imgurl')
+        estampa.tema = request.GET.get('tema')
+        estampa.precio = request.GET.get('precio')
+        estampa.disponible = request.GET.get('disponible')
+        estampa.save()
+        return HttpResponse('Actualización completa')
+    except Estampa.DoesNotExist:
+        estampa = None
+        return HttpResponse('No se encontro el artista')
+    
+@csrf_exempt   
+def ventasArtista(request):
+    try:
+        artista = Artista.objects.get(tipoidusuario = request.GET.get('tipoidusuario'),numidusuario =  request.GET.get('numidusuario'))
+        data = {
+                'utilidad': artista.utilidad,
+                'numventas': artista.numventas
+            }
+            
+        jsonList = json.dumps(data, default=str)    
+        return HttpResponse(jsonList, content_type='application/json')
+    except Usuario.DoesNotExist:
+        artista = None
+        return HttpResponse('No existe el artista')
+
+
