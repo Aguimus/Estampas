@@ -1,5 +1,19 @@
 from django.db import models
 
+class Usuario(models.Model):
+    tipoid = models.CharField( max_length=2)  # The composite primary key (tipoid, numid) found, that is not supported. The first column is selected.
+    numid = models.DecimalField(max_digits=10, decimal_places=0, primary_key=True)
+    nombre = models.CharField(max_length=30)
+    apellido = models.CharField(max_length=30)
+    genero = models.CharField(max_length=1)
+    correo = models.CharField(max_length=30)
+    usuario = models.CharField(max_length=30)
+    contrasena = models.CharField(max_length=30)
+
+    class Meta:
+        managed = False
+        db_table = 'usuario'
+        unique_together = (('tipoid', 'numid'),)
 
 class Admin(models.Model):
     tipoidusuario = models.CharField(max_length=2)  # The composite primary key (tipoidusuario, numidusuario) found, that is not supported. The first column is selected.
@@ -13,7 +27,7 @@ class Admin(models.Model):
 
 class Artista(models.Model):
     tipoidusuario = models.CharField(max_length=2)  # The composite primary key (tipoidusuario, numidusuario) found, that is not supported. The first column is selected.
-    numidusuario = models.OneToOneField('Usuario', models.DO_NOTHING,db_column='numidusuario', primary_key=True)
+    numidusuario = models.OneToOneField(Usuario, models.DO_NOTHING,db_column='numidusuario', primary_key=True)
     utilidad = models.DecimalField(max_digits=8, decimal_places=2)
     numventas = models.DecimalField(max_digits=4, decimal_places=0)
 
@@ -99,17 +113,4 @@ class Factura(models.Model):
         db_table = 'factura'
 
 
-class Usuario(models.Model):
-    tipoid = models.CharField( max_length=2)  # The composite primary key (tipoid, numid) found, that is not supported. The first column is selected.
-    numid = models.DecimalField(max_digits=10, decimal_places=0, primary_key=True)
-    nombre = models.CharField(max_length=30)
-    apellido = models.CharField(max_length=30)
-    genero = models.CharField(max_length=1)
-    correo = models.CharField(max_length=30)
-    usuario = models.CharField(max_length=30)
-    contrasena = models.CharField(max_length=30)
 
-    class Meta:
-        managed = False
-        db_table = 'usuario'
-        unique_together = (('tipoid', 'numid'),)
