@@ -296,7 +296,7 @@ def actualizarEstampa(request):
         return HttpResponse('Actualización completa')
     except Estampa.DoesNotExist:
         estampa = None
-        return HttpResponse('No se encontro el artista')
+        return HttpResponse('No se encontro la estampa')
     
 @csrf_exempt   
 def ventasArtista(request):
