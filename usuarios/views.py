@@ -166,7 +166,7 @@ def catestampa(request):
     for o in catestampa:
         estampa = Estampa.objects.filter(idestampa = o.idestampa.idestampa, disponible = True).values()
         for i in estampa:
-            usuario = Usuario.objects.get(tipoid = i.get('tipoidartista_id'), numid = i.get("numidartista"))
+            usuario = Usuario.objects.get(tipoid = i.get('tipoidartista'), numid = i.get("numidartista"))
             print("user" + usuario.usuario)
             response_data = {
             'cantestampa': o.cantdisponible,
@@ -253,6 +253,10 @@ def nuevaEstampa (request):
         parte_numerica = parte_numerica + 1
         nuevaEstampa = None
         nuevaId = 'ES'+str(parte_numerica)
+
+        #usuario = Usuario.objects.get(numid=request.GET.get('numidartista'))
+        #print(Artista.objects.get(tipoidusuario=request.GET.get('tipoidartista'), numidusuario=usuario))
+        
         nuevaEstampa = Estampa(idestampa = nuevaId, nombre = request.GET.get('nombre'),
                             descripcion = request.GET.get('descripcion'), imgurl = request.GET.get('imgurl'),
                             disponible = True,tema = request.GET.get('tema'), precio = request.GET.get('precio'),
@@ -278,6 +282,7 @@ def nuevaEstampa (request):
         nuevoCat = Catalogoestampa(idcatestampa = nuevaidC, idestampa = Estampa.objects.get(idestampa = nuevaId), cantdisponible = 20)
 
         nuevoCat.save()
+        
         return HttpResponse('Registro exitoso')
     except Estampa.DoesNotExist:
         return HttpResponse('ocurrio un error')
@@ -296,7 +301,7 @@ def actualizarEstampa(request):
         return HttpResponse('Actualización completa')
     except Estampa.DoesNotExist:
         estampa = None
-        return HttpResponse('No se encontro la estampa')
+        return HttpResponse('No se encontro el artista')
     
 @csrf_exempt   
 def ventasArtista(request):
