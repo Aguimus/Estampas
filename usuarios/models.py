@@ -91,8 +91,8 @@ class Estampa(models.Model):
     tema = models.CharField(max_length=20)
     precio = models.DecimalField(max_digits=6, decimal_places=0)
     rating = models.DecimalField(max_digits=3, decimal_places=2)
-    #tipoidartista = models.CharField(max_length=2)
-    tipoidartista = models.ForeignKey(Artista, models.DO_NOTHING, db_column='tipoidartista')
+    tipoidartista = models.CharField(max_length=2)
+    #tipoidartista = models.ForeignKey(Artista, models.DO_NOTHING, db_column='tipoidartista')
     numidartista = models.DecimalField(max_digits=10, decimal_places=0)
 
     class Meta:
