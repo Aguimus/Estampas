@@ -12,5 +12,5 @@ urlpatterns = [
     path('nuevaEstampa/', views.nuevaEstampa),
     path('actualizarEstampa/', views.actualizarEstampa),
     path('ventasArtista/', views.ventasArtista),
-    path('estampasArtista/',views.estampasArtista)
+    path('estampasArtista/', views.estampasArtista)
 ]
