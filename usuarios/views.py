@@ -322,7 +322,7 @@ def estampasArtista(request):
     catestampa = Catalogoestampa.objects.filter(cantdisponible__gt=0)
     data = list()
     for o in catestampa:
-        estampa = Estampa.objects.filter(idestampa = o.idestampa.idestampa, disponible = True, tipoidartista = request.GET.get('tipoidartista', numidartista = request.GET.get('numidartista'))).values()
+        estampa = Estampa.objects.filter(idestampa = o.idestampa.idestampa, disponible = True, tipoidartista = request.GET.get('tipoidartista'), numidartista = request.GET.get('numidartista')).values()
         for i in estampa:
             usuario = Usuario.objects.get(tipoid = i.get('tipoidartista'), numid = i.get("numidartista"))
             print("user" + usuario.usuario)
