@@ -318,4 +318,23 @@ def ventasArtista(request):
         artista = None
         return HttpResponse('No existe el artista')
 
-
+def estampasArtista(request):
+    catestampa = Catalogoestampa.objects.filter(cantdisponible__gt=0)
+    data = list()
+    for o in catestampa:
+        estampa = Estampa.objects.filter(idestampa = o.idestampa.idestampa, disponible = True, tipoidartista = request.GET.get('tipoidartista', numidartista = request.GET.get('numidartista'))).values()
+        for i in estampa:
+            usuario = Usuario.objects.get(tipoid = i.get('tipoidartista'), numid = i.get("numidartista"))
+            print("user" + usuario.usuario)
+            response_data = {
+            'cantestampa': o.cantdisponible,
+            'informacionEstampa': i,
+            'nombre_artista' : usuario.nombre,
+            'apellido_artista':usuario.apellido,
+            'usuario_artista': usuario.usuario
+            }
+            data.append(response_data)
+            
+    print("rs ",response_data)
+    jsonList = json.dumps(data, default=str)    
+    return HttpResponse(jsonList, content_type='application/json')
